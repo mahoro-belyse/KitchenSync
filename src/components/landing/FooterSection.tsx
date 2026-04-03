@@ -22,25 +22,29 @@ const columns: FooterColumn[] = [
     links: [
       { label: "Features", href: "#features" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Changelog", to: "/changelog", placeholder: true },
-      { label: "Roadmap", to: "/roadmap", placeholder: true },
+      { label: "testimonies", href: "#testimonials" },
+      { label: "How it works", href: "#how-it-works" },
     ],
   },
   {
-    heading: "Company",
+    heading: "Company & Legal",
     links: [
       { label: "About", to: "/about", placeholder: true },
       { label: "Blog", to: "/blog", placeholder: true },
-      { label: "Careers", to: "/careers", placeholder: true },
       { label: "Press", to: "/press", placeholder: true },
-    ],
-  },
-  {
-    heading: "Legal",
-    links: [
       { label: "Privacy Policy", to: "/privacy", placeholder: true },
       { label: "Terms of Service", to: "/terms", placeholder: true },
-      { label: "Cookie Policy", to: "/cookies", placeholder: true },
+    ],
+  },
+
+  {
+    heading: "Contact",
+    links: [
+      {
+        label: "Email: hello@kitchensync.gmail",
+        href: "mailto:hello@kitchensync.gmail",
+      },
+      { label: "Phone: +250 766 888 ", href: "tel:+250788888" },
     ],
   },
 ];
@@ -162,7 +166,7 @@ export default function FooterSection() {
             color: "var(--text-muted)",
           }}
         >
-          © 2025 KitchenSync. Built with ❤️ for home cooks everywhere.
+          © 2026 KitchenSync. Built with ❤️ for home cooks everywhere.
         </div>
       </div>
     </footer>
