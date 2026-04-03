@@ -267,7 +267,7 @@ export default function PantryPage() {
             <button
               key={c}
               onClick={() => setSelectedCategory(c)}
-              className="px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0"
+              className="px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors shrink-0"
               style={{
                 backgroundColor: active ? "var(--accent)" : "var(--bg-surface)",
                 color: active ? "#fff" : "var(--text-secondary)",
@@ -291,7 +291,7 @@ export default function PantryPage() {
           }}
         >
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
             style={{ backgroundColor: "var(--accent-soft)" }}
           >
             <Package className="w-5 h-5" style={{ color: "var(--accent)" }} />
@@ -318,7 +318,7 @@ export default function PantryPage() {
           }}
         >
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
             style={{ backgroundColor: "var(--warning-soft)" }}
           >
             <AlertTriangle
@@ -348,7 +348,7 @@ export default function PantryPage() {
           }}
         >
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
             style={{ backgroundColor: "var(--danger-soft)" }}
           >
             <Clock className="w-5 h-5" style={{ color: "var(--danger)" }} />
