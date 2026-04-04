@@ -134,42 +134,6 @@ kitchensync/
 
 ---
 
-## ⚡ Challenges & How We Solved Them
-
-### Challenge 1 — Migrating from Base.com to Supabase
-
-**The problem:** The original app was built on Base.com, a managed backend platform with its own proprietary SDK (`base44`). Every data operation (`base44.entities.Recipe.list()`, `base44.auth.me()`, `base44.auth.logout()`) was tightly coupled to their API. Migrating meant replacing every single data call, the entire authentication system, file storage, and even the routing guards — without breaking the running app.
-
-**How we solved it:** We performed a file-by-file migration, mapping every Base.com concept to its Supabase equivalent:
-
-| Base.com | Supabase |
-|---|---|
-| `base44.auth.me()` | `supabase.auth.getSession()` + `onAuthStateChange` |
-| `base44.auth.logout()` | `supabase.auth.signOut()` |
-| `base44.entities.X.list()` | `supabase.from('table').select('*').eq('user_id', uid)` |
-| `base44.entities.X.create()` | `supabase.from('table').insert({...})` |
-| `base44.entities.X.delete(id)` | `supabase.from('table').delete().eq('id', id)` |
-| Auth redirect guards | `ProtectedRoute` + `PublicOnlyRoute` components using `useAuth()` |
-
-We also replaced `moment.js` with native `Intl` APIs and `Date` arithmetic, and removed `@tanstack/react-query` entirely since Supabase hooks handle state natively.
-
----
-
-### Challenge 2 — CSS Variable Conflict Between Tailwind v4 and shadcn/ui
-
-**The problem:** After migrating to Tailwind CSS v4, all buttons, badges, and colored elements were rendering as invisible or unstyled on screen. The root cause: shadcn/ui components define CSS variables as raw HSL numbers without the `hsl()` wrapper (e.g. `--accent: 16 77% 57%`), which is correct for their internal usage pattern `hsl(var(--accent))`. But our components used `style={{ backgroundColor: 'var(--accent)' }}` directly — which resolved to the raw string `"16 77% 57%"`, not a valid CSS color value.
-
-Tailwind v4 also moved from `tailwind.config.js` to an `@theme {}` block in CSS, introducing `--color-*` prefixed tokens that overlapped with shadcn's unprefixed tokens.
-
-**How we solved it:** We structured `index.css` in a deliberate layered order within a single `:root` block:
-
-1. **shadcn raw HSL vars first** — `--accent: 16 77% 57%` (no wrapper, for shadcn internal use)
-2. **KitchenSync semantic vars last** — `--accent: hsl(16 77% 57%)` (full color value, for direct component use)
-
-Because CSS custom properties follow "last definition wins" within the same selector block, our full-`hsl()` values always override the raw-number versions. shadcn components still work because they wrap with `hsl()` themselves. Dark mode overrides follow the same two-layer pattern inside `.dark {}`. This required zero `!important` flags and no component changes.
-
----
-
 ## 🚀 How to Run
 
 ### Prerequisites
