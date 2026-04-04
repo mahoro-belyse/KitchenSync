@@ -4,7 +4,6 @@ import { Pencil, Trash2 } from "lucide-react";
 import { getIngredientEmoji } from "@/lib/pantryCheck";
 import type { InventoryItem } from "@/types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 interface InventoryCardProps {
   item: InventoryItem;
   onEdit: (item: InventoryItem) => void;
@@ -12,69 +11,60 @@ interface InventoryCardProps {
   onUpdateQuantity: (id: number, quantity: number) => void;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-/** Days from today until the given ISO date string. Negative = already expired. */
 const daysUntil = (isoDate: string): number => {
   const expiry = new Date(isoDate).setHours(0, 0, 0, 0);
   const today = new Date().setHours(0, 0, 0, 0);
   return Math.floor((expiry - today) / 86_400_000);
 };
 
-/** Format a date as "Jun 4" using the browser's Intl API — no libraries needed. */
 const formatShortDate = (isoDate: string): string =>
-  new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(
-    new Date(isoDate),
-  );
+  new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(new Date(isoDate));
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function InventoryCard({
   item,
   onEdit,
   onDelete,
   onUpdateQuantity,
 }: InventoryCardProps) {
-  const [editingQty, setEditingQty] = useState<boolean>(false);
-  const [qty, setQty] = useState<string>(item.quantity.toString());
+  const [editingQty, setEditingQty] = useState(false);
+  const [qty, setQty] = useState(item.quantity.toString());
 
-  // ── Expiry calculations (no moment) ─────────────────────────────────────
   const daysUntilExpiry = item.expiry_date ? daysUntil(item.expiry_date) : null;
   const isExpired = daysUntilExpiry !== null && daysUntilExpiry < 0;
   const isExpiringSoon =
     daysUntilExpiry !== null && daysUntilExpiry >= 0 && daysUntilExpiry <= 7;
   const isLowStock = item.quantity < 2;
 
-  // ── Inline quantity save ─────────────────────────────────────────────────
-  const handleQtySave = (): void => {
+  const handleQtySave = () => {
     const parsed = parseFloat(qty);
-    if (!isNaN(parsed) && parsed > 0) onUpdateQuantity(item.id, parsed);
+    if (!isNaN(parsed) && parsed > 0) {
+      onUpdateQuantity(item.id, parsed);
+    }
     setEditingQty(false);
   };
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-      whileHover={{ y: -2 }}
+      exit={{ opacity: 0, scale: 0.9 }}
       whileTap={{ scale: 0.98 }}
-      className="rounded-2xl p-5 group transition-shadow hover:shadow-md relative"
+      className="rounded-2xl p-4 sm:p-5 group transition-shadow hover:shadow-md"
       style={{
         backgroundColor: "var(--bg-card)",
         border: isLowStock
           ? "1px solid var(--warning)"
           : "1px solid var(--border)",
-        // Low-stock pulsing amber border (spec Part 14.3)
-        animation: isLowStock
-          ? "pulse-amber 2s ease-in-out infinite"
-          : undefined,
       }}
     >
-      {/* ── Top row: category badge + hover action buttons ── */}
-      <div className="flex items-start justify-between">
+      {/* Top */}
+      <div className="flex items-center justify-between">
         <span
-          className="px-2.5 py-0.5 rounded-full text-xs font-medium"
+          className="px-2 py-0.5 rounded-full text-xs"
           style={{
             backgroundColor: "var(--bg-surface)",
             color: "var(--text-secondary)",
@@ -83,54 +73,38 @@ export default function InventoryCard({
           {item.category}
         </span>
 
-        {/* Edit / delete — fade in on hover */}
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* 🔥 FIX: always visible on mobile, hover on desktop */}
+        <div className="flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onEdit(item)}
-            className="p-1.5 rounded-lg transition-colors"
+            className="p-2 rounded-lg"
             style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--bg-surface)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "transparent")
-            }
-            aria-label={`Edit ${item.item_name}`}
           >
-            <Pencil className="w-3.5 h-3.5" />
+            <Pencil className="w-4 h-4" />
           </button>
           <button
             onClick={() => onDelete(item.id)}
-            className="p-1.5 rounded-lg transition-colors"
+            className="p-2 rounded-lg"
             style={{ color: "var(--danger)" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--danger-soft)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "transparent")
-            }
-            aria-label={`Delete ${item.item_name}`}
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* ── Middle: emoji + name + inline qty editor ── */}
+      {/* Middle */}
       <div className="mt-3 flex items-center gap-3">
-        <span className="text-2xl select-none" aria-hidden>
-          {getIngredientEmoji(item.item_name)}
-        </span>
-        <div>
+        <span className="text-2xl">{getIngredientEmoji(item.item_name)}</span>
+
+        <div className="flex-1 min-w-0">
           <h3
-            className="font-semibold text-base"
+            className="font-semibold text-sm sm:text-base truncate"
             style={{ color: "var(--text-primary)" }}
           >
             {item.item_name}
           </h3>
 
           {editingQty ? (
-            /* Inline quantity input — saves on blur or Enter */
             <input
               autoFocus
               type="number"
@@ -138,31 +112,20 @@ export default function InventoryCard({
               onChange={(e) => setQty(e.target.value)}
               onBlur={handleQtySave}
               onKeyDown={(e) => e.key === "Enter" && handleQtySave()}
-              className="w-20 px-2 py-0.5 rounded border font-mono text-sm mt-1"
+              className="w-20 mt-1 px-2 py-1 rounded border text-sm"
               style={{
                 borderColor: "var(--border)",
                 backgroundColor: "var(--bg-primary)",
-                color: "var(--text-primary)",
               }}
-              min={0.01}
-              step={0.01}
             />
           ) : (
-            /* Clickable quantity pill — click to edit in-place */
             <button
               onClick={() => setEditingQty(true)}
-              className="mt-1 px-2 py-0.5 rounded-full font-mono text-sm transition-colors"
+              className="mt-1 px-2 py-0.5 rounded-full text-xs sm:text-sm"
               style={{
                 backgroundColor: "var(--bg-surface)",
                 color: "var(--text-secondary)",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--accent-soft)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--bg-surface)")
-              }
-              title="Click to edit quantity"
             >
               {item.quantity} {item.unit}
             </button>
@@ -170,12 +133,11 @@ export default function InventoryCard({
         </div>
       </div>
 
-      {/* ── Bottom: status badges ── */}
+      {/* Bottom */}
       <div className="mt-3 flex flex-wrap gap-2">
-        {/* Low stock */}
         {isLowStock && (
           <span
-            className="px-2 py-0.5 rounded-full text-xs font-medium"
+            className="px-2 py-0.5 rounded-full text-xs"
             style={{
               backgroundColor: "var(--warning-soft)",
               color: "var(--warning)",
@@ -185,10 +147,9 @@ export default function InventoryCard({
           </span>
         )}
 
-        {/* Expired */}
         {isExpired && (
           <span
-            className="px-2 py-0.5 rounded-full text-xs font-medium"
+            className="px-2 py-0.5 rounded-full text-xs"
             style={{
               backgroundColor: "var(--danger-soft)",
               color: "var(--danger)",
@@ -198,23 +159,21 @@ export default function InventoryCard({
           </span>
         )}
 
-        {/* Expiring soon — "Expires in N days" */}
         {isExpiringSoon && !isExpired && (
           <span
-            className="px-2 py-0.5 rounded-full text-xs font-medium"
+            className="px-2 py-0.5 rounded-full text-xs"
             style={{
               backgroundColor: "var(--warning-soft)",
               color: "var(--warning)",
             }}
           >
-            Expires in {daysUntilExpiry} day{daysUntilExpiry === 1 ? "" : "s"}
+            {daysUntilExpiry}d left
           </span>
         )}
 
-        {/* Expiry date — green if >7 days away */}
         {daysUntilExpiry !== null && !isExpired && !isExpiringSoon && (
           <span
-            className="px-2 py-0.5 rounded-full text-xs font-medium"
+            className="px-2 py-0.5 rounded-full text-xs"
             style={{
               backgroundColor: "var(--success-soft)",
               color: "var(--success)",

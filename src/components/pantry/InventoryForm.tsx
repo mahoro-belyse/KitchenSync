@@ -260,7 +260,7 @@ export default function InventoryForm({
 
       {/* ── Footer buttons ── */}
       <div
-        className="p-6 border-t flex gap-3 flex-shrink-0"
+        className="p-6 border-t flex gap-3 shrink-0"
         style={{ borderColor: "var(--border)" }}
       >
         <Button
