@@ -3,8 +3,11 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { fadeUp } from "@/lib/motion";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CTASection() {
+  const { user, loading } = useAuth();
+
   return (
     <section className="relative overflow-hidden py-24">
       <div
@@ -34,10 +37,17 @@ export default function CTASection() {
             text-[hsl(16,77%,45%)]
             dark:bg-white dark:text-[hsl(16,77%,40%)] dark:hover:bg-white/90"
         >
-          <Link to="/signup">
-            Create Free Account
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
+          {!loading && user ? (
+            <Link to="/dashboard">
+              Go to Dashboard
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          ) : (
+            <Link to="/signup">
+              Create Free Account
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          )}
         </Button>
 
         <p className="text-white/70 mt-4 text-sm">

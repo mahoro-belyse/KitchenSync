@@ -5,9 +5,11 @@ import { ArrowRight, Play, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { staggerContainer, staggerItem } from "@/lib/motion";
+import { useAuth } from "@/context/AuthContext";
 
 export default function HeroSection() {
   const [demoOpen, setDemoOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   return (
     <>
@@ -68,9 +70,15 @@ export default function HeroSection() {
                 className="px-8 h-12 text-base text-white hover:scale-105 transition-transform"
                 style={{ backgroundColor: "var(--color-accent)" }}
               >
-                <Link to="/signup">
-                  Start for Free <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
+                {!loading && user ? (
+                  <Link to="/dashboard">
+                    Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
+                  </Link>
+                ) : (
+                  <Link to="/signup">
+                    Start for Free <ArrowRight className="w-4 h-4 ml-2" />
+                  </Link>
+                )}
               </Button>
 
               <Button
@@ -105,8 +113,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="relative hidden lg:block"
           >
-            {/* Decorative blobs — inline filter:blur always works,
-                unlike Tailwind's blur-3xl which needs a config in v4 */}
+            {/* Decorative blobs */}
             <div
               className="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none"
               style={{
