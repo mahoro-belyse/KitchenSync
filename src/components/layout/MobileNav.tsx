@@ -31,7 +31,6 @@ const tabs: NavTab[] = [
 ];
 
 const moreItems: NavTab[] = [
-  { to: "/check", icon: ChefHat, label: "Can I Cook It?" },
   { to: "/grocery", icon: ShoppingCart, label: "Grocery List" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];

@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/pantry", icon: Package, label: "Pantry" },
   { to: "/recipes", icon: BookOpen, label: "Recipes" },
-  { to: "/check", icon: ChefHat, label: "Can I Cook It?" },
+
   { to: "/meal-plan", icon: CalendarDays, label: "Meal Plan" },
   { to: "/grocery", icon: ShoppingCart, label: "Grocery List" },
 ];
